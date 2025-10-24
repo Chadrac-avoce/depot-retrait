@@ -1,0 +1,15 @@
+body{font-family:Arial,Helvetica,sans-serif;background:#f5f7fb;color:#222;margin:0}
+.topbar{background:#1f6feb;color:#fff;padding:12px}
+.topbar nav a{color:#fff;margin-right:12px;text-decoration:none;font-weight:600}
+.container{max-width:980px;margin:20px auto;padding:18px;background:#fff;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,0.05)}
+h1{color:#0b3a6b}
+.card{padding:12px;margin-bottom:12px;border:1px solid #eef3fb;border-radius:8px;background:#fff}
+button{background:#1f6feb;color:#fff;border:none;padding:10px 14px;border-radius:6px;cursor:pointer}
+input[type=text],input[type=number],input[type=password],input[type=email]{width:100%;padding:8px;border:1px solid #ddd;border-radius:6px}
+table{width:100%;border-collapse:collapse;margin-top:12px}
+table th,table td{padding:8px;border-bottom:1px solid #eee;text-align:left}
+.alert{padding:10px;border-radius:6px;margin-bottom:12px}
+.alert.success{background:#e6f7ec;color:#085a25}
+.alert.error{background:#fff0f0;color:#8b1f1f}
+.big{font-size:1.6rem;font-weight:700}
+label{display:block;margin:8px 0}
