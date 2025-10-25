@@ -1,37 +1,42 @@
-# Utilise l'image officielle PHP avec Apache
-FROM php:8.2-apache
+# 1️⃣ Image PHP avec FPM et extensions nécessaires
+FROM php:8.2-fpm
 
-# Installe les extensions nécessaires à Laravel
+# 2️⃣ Installer les dépendances système et PHP
 RUN apt-get update && apt-get install -y \
-    git unzip libpng-dev libonig-dev libxml2-dev zip curl && \
-    docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+    git \
+    unzip \
+    libpq-dev \
+    libzip-dev \
+    libonig-dev \
+    curl \
+    npm \
+    && docker-php-ext-install pdo pdo_pgsql mbstring zip bcmath opcache
 
-# Active le module Apache mod_rewrite
-RUN a2enmod rewrite
-
-# Copie le code source dans le conteneur
-COPY . /var/www/html
-
-# Définit le répertoire de travail
-WORKDIR /var/www/html
-
-# Installe Composer
+# 3️⃣ Installer Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Installe les dépendances Laravel
+# 4️⃣ Créer le répertoire du projet
+WORKDIR /var/www/html
+
+# 5️⃣ Copier les fichiers du projet
+COPY . .
+
+# 6️⃣ Installer les dépendances PHP et Node.js
 RUN composer install --no-dev --optimize-autoloader
+RUN npm install
+RUN npm run prod
 
-# Définit les permissions nécessaires
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# 7️⃣ Permissions pour Laravel
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Définit la variable d'environnement pour Apache
-ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+# 8️⃣ Cache Laravel
+RUN php artisan config:cache
+RUN php artisan route:cache
+RUN php artisan view:cache
 
-# Change la configuration d’Apache
-RUN sed -ri -e 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/*.conf
+# 9️⃣ Exposer le port de l’application
+EXPOSE 8000
 
-# Expose le port 80
-EXPOSE 80
-
-# Commande de démarrage
-CMD ["apache2-foreground"]
+# 10️⃣ Commande pour démarrer Laravel
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
